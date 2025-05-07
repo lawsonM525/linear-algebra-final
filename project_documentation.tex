@@ -1,0 +1,192 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{float}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={PageRank with Weighted Directed Graphs},
+    pdfpagemode=FullScreen,
+}
+
+\title{Ranking People on a Simulated LinkedIn:\\
+Exploring PageRank with Weighted Directed Graphs}
+\author{Michelle Lawson \& Adriana Soldat}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This project explores the PageRank algorithm—a method originally used by Google to rank webpages—to analyze influence and connection strength in a directed, weighted social network. We simulate a LinkedIn-style network where nodes represent users and edges are based on message activity between them. Unlike undirected graphs (where all relationships are mutual), our graph is directed and weighted: the direction indicates who messages whom, and the weight represents how many times they message each other. This allows us to analyze influence, popularity, and potentially provide recommendations based on communication patterns. We also explore community detection using the Laplacian matrix's zero eigenvalue eigenspace.
+\end{abstract}
+
+\section{Introduction}
+\subsection{Motivation}
+Social networks play a crucial role in our digital interactions, connecting billions of users worldwide. Understanding the structure and dynamics of these networks can provide valuable insights into social influence, information flow, and community formation. In this project, we apply linear algebra techniques to analyze a simulated LinkedIn network, focusing on identifying influential nodes and detecting communities based on communication patterns.
+
+\subsection{Background}
+The PageRank algorithm, developed by Google founders Larry Page and Sergey Brin, revolutionized web search by ranking pages based on their importance within the network. The algorithm treats web links as "votes" of importance, with pages that receive many links from important pages being considered more important themselves. This concept can be extended to social networks, where connections and interactions can indicate social influence.
+
+\subsection{Project Objectives}
+\begin{itemize}
+    \item Implement the PageRank algorithm for a weighted, directed social network
+    \item Analyze how message frequency affects node importance
+    \item Detect communities using the Laplacian matrix's eigenspaces
+    \item Visualize the network with an intuitive heatmap representation
+    \item Simulate changes in the network and observe their effects on rankings
+\end{itemize}
+
+\section{Mathematical Framework}
+\subsection{Weighted Adjacency Matrix}
+For a graph with $n$ nodes, we construct an $n \times n$ weighted adjacency matrix $W$ where:
+\begin{equation}
+    W_{ij} = \text{Number of messages from node $i$ to node $j$}
+\end{equation}
+
+If no messages exist between nodes, the corresponding matrix entry is 0.
+
+\subsection{PageRank Algorithm}
+The PageRank vector $\mathbf{r}$ satisfies:
+\begin{equation}
+    \mathbf{r} = \alpha M\mathbf{r} + (1-\alpha)\mathbf{p}
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $\alpha$ is the damping factor (typically 0.85)
+    \item $M$ is the transition matrix derived from the weighted adjacency matrix $W$
+    \item $\mathbf{p}$ is the personalization vector (uniform in our implementation)
+\end{itemize}
+
+The transition matrix $M$ is computed by normalizing the columns of $W$ such that they sum to 1, representing the probability of transitioning from one node to another.
+
+\subsection{Laplacian Matrix for Community Detection}
+The Laplacian matrix $L$ is defined as:
+\begin{equation}
+    L = D - W_{sym}
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $D$ is the degree matrix (diagonal matrix with node degrees)
+    \item $W_{sym}$ is the symmetrized version of the weighted adjacency matrix
+\end{itemize}
+
+The multiplicity of the eigenvalue 0 in the spectrum of $L$ indicates the number of connected components in the graph. We use this property to detect communities within our network.
+
+\section{Implementation}
+\subsection{Dataset}
+We used the SNAP email-Eu-core network dataset, which represents email communications between members of a European research institution. The dataset consists of directed edges representing who sent an email to whom, with edge weights indicating the number of communications.
+
+\subsection{Code Structure}
+We developed both Python and MATLAB implementations of our analysis:
+
+\begin{itemize}
+    \item Data loading: Parsing the dataset files and constructing the weighted directed graph
+    \item PageRank computation: Implementing power iteration method for PageRank calculation
+    \item Community detection: Analysis of the Laplacian's zero-eigenvalue eigenspace
+    \item Visualization: Creating an intuitive heatmap representation of node importance
+    \item Simulation: Functions to modify the network and observe changes in rankings
+\end{itemize}
+
+\subsection{Algorithm Details}
+\begin{algorithm}
+\caption{PageRank with Power Iteration}
+\begin{algorithmic}
+\STATE Initialize $\mathbf{r}_0$ to uniform distribution
+\STATE $k \gets 0$
+\WHILE{not converged}
+    \STATE $\mathbf{r}_{k+1} \gets \alpha M \mathbf{r}_k + (1-\alpha)\mathbf{p}$
+    \STATE $\mathbf{r}_{k+1} \gets \mathbf{r}_{k+1} / \|\mathbf{r}_{k+1}\|_1$
+    \STATE $k \gets k + 1$
+\ENDWHILE
+\RETURN $\mathbf{r}_k$
+\end{algorithmic}
+\end{algorithm}
+
+\section{Results and Analysis}
+\subsection{PageRank Distribution}
+[This section will contain analysis of the PageRank scores distribution]
+
+\subsection{Influential Nodes}
+[This section will discuss the characteristics of the most influential nodes]
+
+\subsection{Community Structure}
+[This section will analyze the communities detected through Laplacian analysis]
+
+\subsection{Effect of Message Frequency}
+[This section will explore how changes in communication patterns affect rankings]
+
+\section{Visualization}
+\subsection{Network Heatmap}
+\begin{figure}[H]
+    \centering
+    [Insert your visualization here]
+    \caption{Network visualization with node colors representing PageRank scores (red for high importance, blue for low importance)}
+    \label{fig:network}
+\end{figure}
+
+\subsection{Ranking Changes Before and After Simulated Messages}
+\begin{figure}[H]
+    \centering
+    [Insert before/after visualization here]
+    \caption{Changes in PageRank scores after simulating additional messages}
+    \label{fig:changes}
+\end{figure}
+
+\section{Discussion}
+\subsection{Real-World Applications}
+The analysis techniques explored in this project have several practical applications:
+\begin{itemize}
+    \item Identifying influential users in social networks
+    \item Recommending connections based on communication patterns
+    \item Detecting communities for targeted marketing or content delivery
+    \item Analyzing information flow and potential bottlenecks in organizational communications
+    \item Understanding the emergence of opinion leaders in online discussions
+\end{itemize}
+
+\subsection{Limitations}
+\begin{itemize}
+    \item The simulation assumes that message frequency directly correlates with influence
+    \item Community detection based solely on the Laplacian may miss more nuanced group structures
+    \item Real social networks have additional attributes and dynamics not captured in our model
+\end{itemize}
+
+\section{Conclusion}
+This project successfully applied linear algebra concepts—specifically eigenvalues, eigenvectors, and matrix operations—to analyze influence and community structure in a directed, weighted social network. Our implementation of PageRank provides insights into node importance based on communication patterns, while the Laplacian analysis reveals community structures.
+
+By simulating changes in the network, we observed how new interactions affect the overall importance distribution, demonstrating the dynamic nature of influence in social networks. These methods provide a mathematical foundation for understanding complex social structures and could be extended to various real-world applications in social media analysis, organizational communication, and recommendation systems.
+
+\section{References}
+\begin{enumerate}
+    \item Page, L., Brin, S., Motwani, R., \& Winograd, T. (1999). The PageRank citation ranking: Bringing order to the web. Stanford InfoLab.
+    \item Fortunato, S. (2010). Community detection in graphs. Physics Reports, 486(3-5), 75-174.
+    \item Leskovec, J., \& Krevl, A. (2014). SNAP Datasets: Stanford Large Network Dataset Collection. \url{http://snap.stanford.edu/data}
+    \item von Luxburg, U. (2007). A tutorial on spectral clustering. Statistics and Computing, 17(4), 395-416.
+\end{enumerate}
+
+\appendix
+\section{Code Implementation}
+\subsection{Python Implementation}
+\begin{lstlisting}[language=Python, caption=PageRank and Community Detection in Python]
+# Include key sections of your Python code here
+\end{lstlisting}
+
+\subsection{MATLAB Implementation}
+\begin{lstlisting}[language=Matlab, caption=PageRank and Community Detection in MATLAB]
+# Include key sections of your MATLAB code here
+\end{lstlisting}
+
+\end{document}
