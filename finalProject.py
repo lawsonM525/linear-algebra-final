@@ -145,6 +145,9 @@ def main() -> None:
     pair = (0, 42)
     print(f"\nSimulating 100 extra e-mails from {pair[0]} → {pair[1]} …")
     pr2 = simulate_messages(G, [pair], n=100)
+
+    print("Top-10 influential nodes (after simulation):")
+    display_topk(pr2)
     plot_graph(G, pr2, "After simulated messages")
 
 if __name__ == "__main__":
